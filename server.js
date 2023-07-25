@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const productController = require('./controllers/productController');
 require('dotenv').config();
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3005;
 
 // Middleware
 app.use(express.json());

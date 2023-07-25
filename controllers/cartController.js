@@ -1,6 +1,18 @@
 // controllers/cartController.js
 const CartItem = require('../models/Cart');
 
+
+//Replace `CartItem` with your actual cart item model and schema
+const getAllCartItems = async (req, res) => {
+    try {
+        const cartItems = await CartItem.find();
+        res.status(200).json(cartItems);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching cart items' });
+    }
+};
+
+
 // Get cart items for a specific user
 const getCartItems = async (req, res) => {
     try {
@@ -15,26 +27,28 @@ const getCartItems = async (req, res) => {
 
 // Add a product to the cart
 const addToCart = async (req, res) => {
+    const { userId, productId, quantity } = req.body;
+
     try {
-        const { userId, productId, quantity } = req.body;
-        const cartItem = await CartItem.findOne({ user: userId, product: productId });
+        // Check if the cart item already exists for the user and product
+        let cartItem = await CartItem.findOne({ userId, productId });
 
         if (cartItem) {
-            // If the item already exists in the cart, update the quantity
+            // If the cart item exists, update the quantity
             cartItem.quantity += quantity;
             await cartItem.save();
         } else {
-            // If the item is not in the cart, create a new cart item
-            const newCartItem = new CartItem({ user: userId, product: productId, quantity });
-            await newCartItem.save();
+            // If the cart item does not exist, create a new one
+            cartItem = new CartItem({ userId, productId, quantity });
+            await cartItem.save();
         }
 
-        res.status(201).json({ message: 'Product added to cart successfully' });
-    } catch (err) {
-        console.error('Error adding to cart:', err);
-        res.status(500).json({ message: 'Failed to add product to cart' });
+        res.status(201).json({ message: 'Product added to cart successfully!', cartItem });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add product to cart.' });
     }
 };
+
 
 // Remove a product from the cart
 const removeFromCart = async (req, res) => {
@@ -53,4 +67,5 @@ module.exports = {
     getCartItems,
     addToCart,
     removeFromCart,
+    getAllCartItems,
 };

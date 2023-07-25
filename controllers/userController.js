@@ -47,7 +47,20 @@ const loginUser = async (req, res) => {
     }
 };
 
+// controllers/usersController.js
+// Replace `User` with your actual user model and schema
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching users' });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    getAllUsers
 };

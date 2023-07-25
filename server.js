@@ -22,7 +22,7 @@ mongoose.connect(process.env.DB_URI, {
 // User routes
 app.post('/api/register', userController.registerUser);
 app.post('/api/login', userController.loginUser);
-
+app.get('/allUsers', userController.getAllUsers);
 
 // Product routes
 app.get('/api/products', productController.getAllProducts);
@@ -32,6 +32,7 @@ app.post('/api/products', productController.createProduct);
 app.get('/api/cart', cartController.getCartItems);
 app.post('/api/cart/add', cartController.addToCart);
 app.delete('/api/cart/remove/:itemId', cartController.removeFromCart);
+app.get('/all', cartController.getAllCartItems);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

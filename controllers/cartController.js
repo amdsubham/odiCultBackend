@@ -1,5 +1,5 @@
 // controllers/cartController.js
-const CartItem = require('../models/CartItem');
+const CartItem = require('../models/Cart');
 
 // Get cart items for a specific user
 const getCartItems = async (req, res) => {

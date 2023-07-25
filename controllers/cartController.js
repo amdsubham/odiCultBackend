@@ -17,11 +17,15 @@ const getAllCartItems = async (req, res) => {
 const getCartItems = async (req, res) => {
     try {
         const { userId } = req.query;
-        const cartItems = await CartItem.find({ user: userId }).populate('product');
+
+        if (!userId) {
+            return res.status(400).json({ error: 'userId is required' });
+        }
+
+        const cartItems = await CartItem.find({ userId }).populate('productId');
         res.status(200).json(cartItems);
-    } catch (err) {
-        console.error('Error fetching cart items:', err);
-        res.status(500).json({ message: 'Failed to fetch cart items' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching cart items' });
     }
 };
 

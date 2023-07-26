@@ -8,6 +8,7 @@ const createOrder = async (req, res) => {
 
         // Create the order document in the database
         const order = new Order({
+            userId,
             cartItems,
             totalPrice,
             name,
@@ -16,6 +17,7 @@ const createOrder = async (req, res) => {
             pincode,
             phone,
             paymentMode: 'Cash on Delivery', // Assuming Cash on Delivery is the only payment mode for now
+            status: 'Processing',
         });
 
         // Save the order to the database

@@ -5,6 +5,7 @@ const productController = require('./controllers/productController');
 const cartController = require('./controllers/cartController');
 const userController = require('./controllers/userController');
 const checkoutController = require('./controllers/checkoutController');
+const orderRoutes = require('./routes/orderRoutes');
 
 require('dotenv').config();
 const app = express();
@@ -34,6 +35,9 @@ app.get('/api/cart', cartController.getCartItems);
 app.post('/api/cart/add', cartController.addToCart);
 app.delete('/api/cart/remove/:itemId', cartController.removeFromCart);
 app.get('/api/cart/all', cartController.getAllCartItems);
+
+// Order routes
+app.use('/api/orders', orderRoutes);
 
 // Checkout routes
 app.post('/api/checkout/order', checkoutController.createOrder);

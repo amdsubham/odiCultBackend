@@ -4,7 +4,7 @@ const Order = require('../models/Order');
 // Create a new order during checkout
 const createOrder = async (req, res) => {
     try {
-        const { cartItems, totalPrice, name, email, address, pincode, phone } = req.body;
+        const { userId, cartItems, totalPrice, name, email, address, pincode, phone } = req.body;
 
         // Create the order document in the database
         const order = new Order({

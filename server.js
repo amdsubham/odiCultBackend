@@ -44,10 +44,10 @@ app.use('/api/orders', orderRoutes);
 app.post('/api/checkout/order', checkoutController.createOrder);
 
 // Register a new admin user
-router.post('/admin/register', adminAuthController.register);
+app.post('/admin/register', adminAuthController.register);
 
 // Login for admin users
-router.post('/admin/login', adminAuthController.login);
+app.post('/admin/login', adminAuthController.login);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -5,6 +5,7 @@ const productController = require('./controllers/productController');
 const cartController = require('./controllers/cartController');
 const userController = require('./controllers/userController');
 const checkoutController = require('./controllers/checkoutController');
+const adminAuthController = require('./controllers/adminAuthController');
 const orderRoutes = require('./routes/orderRoutes');
 
 require('dotenv').config();
@@ -41,6 +42,12 @@ app.use('/api/orders', orderRoutes);
 
 // Checkout routes
 app.post('/api/checkout/order', checkoutController.createOrder);
+
+// Register a new admin user
+router.post('/admin/register', adminAuthController.register);
+
+// Login for admin users
+router.post('/admin/login', adminAuthController.login);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

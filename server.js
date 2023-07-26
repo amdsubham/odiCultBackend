@@ -41,6 +41,7 @@ app.use('/api/orders', orderRoutes);
 
 // Checkout routes
 app.post('/api/checkout/order', checkoutController.createOrder);
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

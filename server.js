@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const productController = require('./controllers/productController');
 const cartController = require('./controllers/cartController');
 const userController = require('./controllers/userController');
+const checkoutController = require('./controllers/checkoutController');
 
 require('dotenv').config();
 const app = express();
@@ -34,6 +35,8 @@ app.post('/api/cart/add', cartController.addToCart);
 app.delete('/api/cart/remove/:itemId', cartController.removeFromCart);
 app.get('/all', cartController.getAllCartItems);
 
+// Checkout routes
+app.post('/order', checkoutController.createOrder);
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

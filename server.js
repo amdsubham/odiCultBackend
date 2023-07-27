@@ -30,6 +30,8 @@ app.get('/api/allUsers', userController.getAllUsers);
 // Product routes
 app.get('/api/products', productController.getAllProducts);
 app.post('/api/products', productController.createProduct);
+app.put('/api/products', productController.updateProduct);
+app.delete('/api/products', productController.deleteProduct);
 
 // Cart routes
 app.get('/api/cart', cartController.getCartItems);
@@ -44,10 +46,10 @@ app.use('/api/orders', orderRoutes);
 app.post('/api/checkout/order', checkoutController.createOrder);
 
 // Register a new admin user
-app.post('/admin/register', adminAuthController.register);
+app.post('/api/admin/register', adminAuthController.register);
 
 // Login for admin users
-app.post('/admin/login', adminAuthController.login);
+app.post('/api/admin/login', adminAuthController.login);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

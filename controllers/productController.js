@@ -21,6 +21,7 @@ const getAllProducts = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch products' });
     }
 };
+
 // Create a new product
 const createProduct = async (req, res) => {
     try {
@@ -34,7 +35,50 @@ const createProduct = async (req, res) => {
     }
 };
 
+// Update a product
+const updateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, imageUrl } = req.body;
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { name, description, price, imageUrl },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json({ message: 'Product updated successfully' });
+    } catch (err) {
+        console.error('Error updating product:', err);
+        res.status(500).json({ message: 'Failed to update product' });
+    }
+};
+
+// Delete a product
+const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedProduct = await Product.findByIdAndDelete(id);
+
+        if (!deletedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json({ message: 'Product deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting product:', err);
+        res.status(500).json({ message: 'Failed to delete product' });
+    }
+};
+
 module.exports = {
     getAllProducts,
     createProduct,
+    updateProduct,
+    deleteProduct,
 };

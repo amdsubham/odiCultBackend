@@ -40,7 +40,6 @@ const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, price, imageUrl, quantity } = req.body;
-
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
             { name, description, price, imageUrl, quantity },
@@ -62,7 +61,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-
+        console.log("updatedProduct -- id", id)
         const deletedProduct = await Product.findByIdAndDelete(id);
 
         if (!deletedProduct) {

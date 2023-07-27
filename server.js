@@ -30,8 +30,8 @@ app.get('/api/allUsers', userController.getAllUsers);
 // Product routes
 app.get('/api/products', productController.getAllProducts);
 app.post('/api/products', productController.createProduct);
-app.put('/api/products', productController.updateProduct);
-app.delete('/api/products', productController.deleteProduct);
+app.put('/api/products/:id', productController.updateProduct);
+app.delete('/api/products/:id', productController.deleteProduct);
 
 // Cart routes
 app.get('/api/cart', cartController.getCartItems);

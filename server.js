@@ -26,6 +26,8 @@ mongoose.connect(process.env.DB_URI, {
 app.post('/api/register', userController.registerUser);
 app.post('/api/login', userController.loginUser);
 app.get('/api/allUsers', userController.getAllUsers);
+app.put('/api/users/:id', userController.updateUser);
+app.delete('/api/users/:id', userController.deleteUser);
 
 // Product routes
 app.get('/api/products', productController.getAllProducts);

@@ -25,8 +25,8 @@ const getAllProducts = async (req, res) => {
 // Create a new product
 const createProduct = async (req, res) => {
     try {
-        const { name, description, price, imageUrl } = req.body;
-        const newProduct = new Product({ name, description, price, imageUrl });
+        const { name, description, price, imageUrl, quantity } = req.body;
+        const newProduct = new Product({ name, description, price, imageUrl, quantity });
         await newProduct.save();
         res.status(201).json({ message: 'Product created successfully' });
     } catch (err) {
@@ -39,11 +39,11 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, imageUrl } = req.body;
+        const { name, description, price, imageUrl, quantity } = req.body;
 
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
-            { name, description, price, imageUrl },
+            { name, description, price, imageUrl, quantity },
             { new: true }
         );
 

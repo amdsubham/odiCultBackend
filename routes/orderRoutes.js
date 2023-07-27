@@ -16,9 +16,9 @@ router.get('/:userId', async (req, res) => {
 });
 
 // Get all orders
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const orders = await Order.find({}).sort({ date: -1 });;
+        const orders = await Order.find().sort({ date: -1 });;
         res.status(200).json(orders);
     } catch (error) {
         console.error('Error fetching orders:', error);
@@ -27,17 +27,17 @@ router.get('/all', async (req, res) => {
 });
 
 
-// Create a new order
-router.post('/', async (req, res) => {
-    try {
-        const { userId, cartItems, totalPrice } = req.body;
-        const newOrder = await Order.create({ userId, cartItems, totalPrice });
-        res.status(201).json(newOrder);
-    } catch (error) {
-        console.error('Error creating order:', error);
-        res.status(500).json({ error: 'Failed to create order.' });
-    }
-});
+// // Create a new order
+// router.post('/', async (req, res) => {
+//     try {
+//         const { userId, cartItems, totalPrice } = req.body;
+//         const newOrder = await Order.create({ userId, cartItems, totalPrice });
+//         res.status(201).json(newOrder);
+//     } catch (error) {
+//         console.error('Error creating order:', error);
+//         res.status(500).json({ error: 'Failed to create order.' });
+//     }
+// });
 
 // Update order status
 router.put('/:orderId', async (req, res) => {

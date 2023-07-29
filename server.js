@@ -1,6 +1,7 @@
 // server.js
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const productController = require('./controllers/productController');
 const cartController = require('./controllers/cartController');
 const userController = require('./controllers/userController');
@@ -10,9 +11,13 @@ const orderRoutes = require('./routes/orderRoutes');
 
 require('dotenv').config();
 const app = express();
-const PORT = process.env.PORT || 3005;
-
+const PORT = process.env.PORT || 3012;
+const corsOptions = {
+    "origin": "*",
+    optionsSuccessStatus: 200
+}
 // Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB Connection

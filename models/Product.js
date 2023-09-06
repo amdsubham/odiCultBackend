@@ -20,6 +20,16 @@ const productSchema = new mongoose.Schema({
         default: 1,
         required: true,
     },
+    rating: {
+        type: String,
+        required: true,
+    },
+    map_location: {
+        type: String,
+    },
+    contact: {
+        type: String,
+    },
 });
 
 module.exports = mongoose.model('Product', productSchema);

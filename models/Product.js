@@ -30,6 +30,10 @@ const productSchema = new mongoose.Schema({
     contact: {
         type: String,
     },
+    category: {
+        type: String,
+        required: true,
+    },
 });
 
 module.exports = mongoose.model('Product', productSchema);

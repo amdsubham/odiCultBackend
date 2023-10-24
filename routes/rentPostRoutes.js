@@ -11,9 +11,10 @@ const router = express.Router();
 router.post('/create', async (req, res) => {
     try {
         const newPostData = req.body;
-        console.log("req.body", req.body)
-        // Include the user's ID in the rental post data
-        newPostData.userId = req.body.userId; // Assuming you have user information in req.user
+        const firebaseId = req.user.firebaseId; // Assuming you can access Firebase user ID from req.user
+
+        // Include the user's Firebase ID in the rental post data
+        newPostData.firebaseId = firebaseId;
 
         // Create a new RentPost document
         const newPost = new RentPost(newPostData);
@@ -23,7 +24,7 @@ router.post('/create', async (req, res) => {
         const postId = savedPost._id;
 
         // Update the user's User document to include the rental post's ID
-        await User.findByIdAndUpdate(req.body.userId, { $push: { rentPosts: postId } });
+        await User.findByIdAndUpdate(firebaseId, { $push: { rentPosts: postId } });
 
         return res.status(201).json(savedPost);
     } catch (error) {
@@ -31,6 +32,7 @@ router.post('/create', async (req, res) => {
         res.status(500).json({ message: 'Server error.' });
     }
 });
+
 
 // Update a rental post by ID
 // Update a rental post by ID

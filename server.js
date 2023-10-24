@@ -30,7 +30,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/rentpost', rentPostRoutes);
 app.use('/api/messages', messageRoutes);
 // Start the server
-const port = process.env.PORT || 3000;
+const port = 3040;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

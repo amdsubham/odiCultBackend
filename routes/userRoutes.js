@@ -5,6 +5,7 @@ const router = express.Router();
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk'); // Import the AWS SDK
+const Utils = require('../models/utils');
 
 // AWS S3 configuration
 const s3 = new AWS.S3();
@@ -22,10 +23,37 @@ const storage = multerS3({
     },
 });
 
+const getMaxCoinsToAssign = async () => {
+    try {
+        // Assuming you have a model for "utils" (you may need to replace 'Utils' with your actual model name)
+        const utilsDocument = await Utils.findOne({ name: 'coins' }); // Replace 'name' with the actual field name that matches 'coins'
+        if (utilsDocument && utilsDocument.maxCoinsToAssign) {
+            return utilsDocument.maxCoinsToAssign;
+        }
+        return 0; // Default value if not found
+    } catch (error) {
+        console.error('Error fetching maxCoinsToAssign:', error);
+        return 2; // Default value if an error occurs
+    }
+};
+
+const getSubscriptionMaxDays = async () => {
+    try {
+        // Assuming you have a model for "utils" (you may need to replace 'Utils' with your actual model name)
+        const utilsDocument = await Utils.findOne({ name: 'subscription' }); // Replace 'name' with the actual field name that matches 'coins'
+        if (utilsDocument && utilsDocument.maxSubscriptionDays) {
+            return utilsDocument.maxSubscriptionDays;
+        }
+        return 0; // Default value if not found
+    } catch (error) {
+        console.error('Error fetching maxSubscriptionDays:', error);
+        return 30; // Default value if an error occurs
+    }
+}
+
 router.post('/register', async (req, res) => {
     try {
         const { phoneNumber } = req.body;
-        console.log("req.body", req.body)
         const existingUser = await User.findOne({ phoneNumber });
 
         if (existingUser) {
@@ -34,6 +62,9 @@ router.post('/register', async (req, res) => {
 
         const { name, email, gender, tenantType, image } = req.body;
 
+        // Fetch maxCoinsToAssign from "utils" document
+        const maxCoinsToAssign = await getMaxCoinsToAssign();
+
         const newUser = new User({
             name,
             email,
@@ -41,6 +72,7 @@ router.post('/register', async (req, res) => {
             image, // The image URL is provided by the client
             tenantType,
             phoneNumber,
+            coins: maxCoinsToAssign, // Initialize coins field with maxCoinsToAssign value
         });
 
         const savedUser = await newUser.save();
@@ -51,7 +83,6 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ message: 'Server error.' });
     }
 });
-
 
 router.delete('/delete/:id', async (req, res) => {
     const s3 = new AWS.S3();
@@ -137,9 +168,7 @@ router.get('/getUserByPhoneNumber/:phoneNumber', async (req, res) => {
     const { phoneNumber } = req.params;
 
     try {
-        // Find the user based on the provided phone number
         const user = await User.findOne({ phoneNumber });
-
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -149,6 +178,41 @@ router.get('/getUserByPhoneNumber/:phoneNumber', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user by phone number:', error);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Define a route to update user coins and check subscription
+router.put('/updateUserCoins/:phoneNumber', async (req, res) => {
+    const { phoneNumber } = req.params;
+    const { coins } = req.body; // New coins value
+
+    try {
+        const user = await User.findOne({ phoneNumber });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const subscriptionStartDate = user.subscriptionStartDate;
+        const currentTimestamp = Date.now();
+        const maxSubscriptionDays = await getSubscriptionMaxDays(); // Implement this function to fetch maxSubscriptionDays from the utils model
+        const subscriptionStartDateTimestamp = Number(subscriptionStartDate) * 1000;
+        const subscriptionActive = subscriptionStartDateTimestamp !== NaN &&
+            currentTimestamp - subscriptionStartDateTimestamp < maxSubscriptionDays * 24 * 60 * 60 * 1000;
+
+        // Update the user's coins field
+        user.coins = coins;
+
+        // Save the updated user document
+        const updatedUser = await user.save();
+
+        // Calculate and return coinsLeft and subscriptionActive
+        const coinsLeft = updatedUser.coins;
+
+        res.status(200).json({ coinsLeft, subscriptionActive });
+    } catch (error) {
+        console.error('Error updating user coins:', error);
+        res.status(500).json({ error: 'Error updating user coins' });
     }
 });
 

@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
     tenantType: String,
     rentPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RentPost' }],
     firebaseId: String,
+    coins: { type: Number, default: 0 },
+    subscriptionStartDate: { type: String, default: 'NA' },
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -1,7 +1,6 @@
 const express = require('express');
 const RentPost = require('../models/rentPost');
 const User = require('../models/user');
-
 const router = express.Router();
 
 // API Routes
@@ -11,8 +10,8 @@ const router = express.Router();
 router.post('/create', async (req, res) => {
     try {
         const newPostData = req.body;
-        const firebaseId = req.user.firebaseId; // Assuming you can access Firebase user ID from req.user
-
+        const firebaseId = req.body.firebaseId; // Assuming you can access Firebase user ID from req.user
+        const userId = req.body.userId;
         // Include the user's Firebase ID in the rental post data
         newPostData.firebaseId = firebaseId;
 
@@ -24,7 +23,7 @@ router.post('/create', async (req, res) => {
         const postId = savedPost._id;
 
         // Update the user's User document to include the rental post's ID
-        await User.findByIdAndUpdate(firebaseId, { $push: { rentPosts: postId } });
+        await User.findByIdAndUpdate(userId, { $push: { rentPosts: postId } });
 
         return res.status(201).json(savedPost);
     } catch (error) {

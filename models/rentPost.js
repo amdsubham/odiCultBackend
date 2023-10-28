@@ -14,7 +14,8 @@ const rentPostSchema = new mongoose.Schema({
     isFurnished: Boolean,
     hasAttachedBathroom: Boolean,
     isBachelorsAllowed: Boolean,
-    user: Object
+    user: Object,
+    price: Number,
 });
 
 module.exports = mongoose.model('RentPost', rentPostSchema);

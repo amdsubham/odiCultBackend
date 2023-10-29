@@ -1,6 +1,6 @@
 const express = require('express');
 const RentPost = require('../models/rentPost');
-const User = require('../models/user');
+const User = require('../models/User');
 const router = express.Router();
 
 // API Routes

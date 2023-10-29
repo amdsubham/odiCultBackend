@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     firebaseId: String,
     coins: { type: Number, default: 0 },
     subscriptionStartDate: { type: String, default: 'NA' },
+    location: Object,
 });
 
 module.exports = mongoose.model('User', userSchema);

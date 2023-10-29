@@ -1,5 +1,5 @@
 const express = require('express');
-const User = require('../models/user');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const multer = require('multer');
@@ -201,18 +201,37 @@ router.put('/updateUserCoins/:phoneNumber', async (req, res) => {
             currentTimestamp - subscriptionStartDateTimestamp < maxSubscriptionDays * 24 * 60 * 60 * 1000;
 
         // Update the user's coins field
-        user.coins = coins;
+        user.coins = coins - 1;
 
         // Save the updated user document
         const updatedUser = await user.save();
 
         // Calculate and return coinsLeft and subscriptionActive
-        const coinsLeft = updatedUser.coins;
+        const coinsLeft = coins - 1;
 
         res.status(200).json({ coinsLeft, subscriptionActive });
     } catch (error) {
         console.error('Error updating user coins:', error);
         res.status(500).json({ error: 'Error updating user coins' });
+    }
+});
+
+router.get('/getAppUpdateStatus', async (req, res) => {
+    try {
+        const appUpdateDocument = await Utils.findOne({ name: 'appUpdate' });
+        console.log("appUpdateDocument", appUpdateDocument)
+        if (!appUpdateDocument) {
+            console.log('No appUpdate document found or blockApp is not defined.');
+            return res.status(200).json({ blockApp: false });
+        }
+
+        const blockAppStatus = appUpdateDocument._doc.blockApp;
+        const action = appUpdateDocument._doc.action;
+        console.log('Returning blockApp status:', blockAppStatus);
+        return res.status(200).json({ blockApp: blockAppStatus, action });
+    } catch (error) {
+        console.error('Error fetching appUpdate status:', error);
+        return res.status(500).json({ error: 'Error fetching appUpdate status' });
     }
 });
 

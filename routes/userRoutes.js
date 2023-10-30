@@ -235,4 +235,14 @@ router.get('/getAppUpdateStatus', async (req, res) => {
     }
 });
 
+router.get('/getAllLocations', async (req, res) => {
+    try {
+        const locationsDocument = await Utils.findOne({ name: 'locations' });
+        return res.status(200).json({ locations: locationsDocument._doc.locations });
+    } catch (error) {
+        console.error('Error fetching locations:', error);
+        return res.status(500).json({ error: 'Error fetching locations' });
+    }
+});
+
 module.exports = router;

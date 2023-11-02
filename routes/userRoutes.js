@@ -6,7 +6,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk'); // Import the AWS SDK
 const Utils = require('../models/utils');
-
+const crypto = require('crypto')
 // AWS S3 configuration
 const s3 = new AWS.S3();
 
@@ -242,6 +242,48 @@ router.get('/getAllLocations', async (req, res) => {
     } catch (error) {
         console.error('Error fetching locations:', error);
         return res.status(500).json({ error: 'Error fetching locations' });
+    }
+});
+
+router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (req, res) => {
+    try {
+        const webhookData = req.body;
+        console.log('Received webhook:', webhookData);
+        const privateSalt = "ef77b9c5c8a3a5d8a6bae8c2e46011f43fcb4b3f9f1b4db0057c687e6a8b35e4"//process.env.INSTAMOJO_PRIVATE_SALT;
+
+        const generatedMac = crypto.createHmac('sha1', privateSalt)
+            .update(JSON.stringify(webhookData))
+            .digest('hex');
+        // Verify the MAC to confirm the webhook is from Instamojo
+        if (generatedMac !== webhookData.mac) {
+            return res.status(403).json({ error: 'Invalid MAC, unauthorized.' });
+        }
+
+        // Check if payment status is 'Credit' and the buyer_phone is provided
+        if (webhookData.status === 'Credit' && webhookData.buyer_phone) {
+            // Define the coin amount and subscription start date
+            const coinsToAdd = 10000;
+            const subscriptionStartDate = moment().toISOString(); // Current timestamp in ISO 8601 format
+
+            // Update the user's coin balance and subscription start date
+            await User.findOneAndUpdate(
+                { phoneNumber: webhookData.buyer_phone },
+                {
+                    $inc: { coins: coinsToAdd }, // Increment user's coins by 10000
+                    subscriptionStartDate: subscriptionStartDate // Update subscription start date
+                },
+                { new: true } // Return the updated user object
+            );
+
+            // Respond positively after successful update
+            res.status(200).send('Webhook processed successfully');
+        } else {
+            // Handle other cases, such as payment failure or missing phone number
+            res.status(400).send('Payment failed or buyer phone not provided');
+        }
+    } catch (error) {
+        console.error('Error handling Instamojo webhook:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 

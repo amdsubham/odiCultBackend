@@ -6,7 +6,8 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk'); // Import the AWS SDK
 const Utils = require('../models/utils');
-const crypto = require('crypto')
+const moment = require('moment')
+
 // AWS S3 configuration
 const s3 = new AWS.S3();
 
@@ -271,7 +272,7 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
         if (webhookData.status === 'Credit' && buyerPhone) {
             const coinsToAdd = 10000;
             const subscriptionStartDate = moment().toISOString();
-
+            console.log("subscriptionStartDate", subscriptionStartDate)
             // Update the user's coin balance and subscription start date
             await User.findOneAndUpdate(
                 { phoneNumber: buyerPhone },

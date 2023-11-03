@@ -249,16 +249,16 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
     try {
         const webhookData = req.body;
         console.log('Received webhook:', webhookData);
-        const privateSalt = "ef77b9c5c8a3a5d8a6bae8c2e46011f43fcb4b3f9f1b4db0057c687e6a8b35e4"; // Ideally should be from process.env.INSTAMOJO_PRIVATE_SALT;
+        //const privateSalt = "ef77b9c5c8a3a5d8a6bae8c2e46011f43fcb4b3f9f1b4db0057c687e6a8b35e4"; // Ideally should be from process.env.INSTAMOJO_PRIVATE_SALT;
 
-        const generatedMac = crypto.createHmac('sha1', privateSalt)
-            .update(JSON.stringify(webhookData))
-            .digest('hex');
-        console.log("generatedMac", generatedMac)
-        // Verify the MAC to confirm the webhook is from Instamojo
-        if (generatedMac !== webhookData.mac) {
-            return res.status(403).json({ error: 'Invalid MAC, unauthorized.' });
-        }
+        // const generatedMac = crypto.createHmac('sha1', privateSalt)
+        //     .update(JSON.stringify(webhookData))
+        //     .digest('hex');
+        // console.log("generatedMac", generatedMac)
+        // // Verify the MAC to confirm the webhook is from Instamojo
+        // if (generatedMac !== webhookData.mac) {
+        //     return res.status(403).json({ error: 'Invalid MAC, unauthorized.' });
+        // }
 
         // Normalize buyer_phone by removing +91 if present
         let buyerPhone = webhookData.buyer_phone;

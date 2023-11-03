@@ -271,8 +271,8 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
         // Check if payment status is 'Credit'
         if (webhookData.status === 'Credit' && buyerPhone) {
             const coinsToAdd = 10000;
-            const subscriptionStartDate = Date.now().toString();
-            console.log("subscriptionStartDate", subscriptionStartDate)
+            const subscriptionStartDate = (Date.now() / 1000).toString();
+            console.log("subscriptionStartDate", subscriptionStartDate / 1000)
             // Update the user's coin balance and subscription start date
             await User.findOneAndUpdate(
                 { phoneNumber: buyerPhone },

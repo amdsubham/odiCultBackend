@@ -249,25 +249,32 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
     try {
         const webhookData = req.body;
         console.log('Received webhook:', webhookData);
-        const privateSalt = "ef77b9c5c8a3a5d8a6bae8c2e46011f43fcb4b3f9f1b4db0057c687e6a8b35e4"//process.env.INSTAMOJO_PRIVATE_SALT;
+        const privateSalt = "ef77b9c5c8a3a5d8a6bae8c2e46011f43fcb4b3f9f1b4db0057c687e6a8b35e4"; // Ideally should be from process.env.INSTAMOJO_PRIVATE_SALT;
 
         const generatedMac = crypto.createHmac('sha1', privateSalt)
             .update(JSON.stringify(webhookData))
             .digest('hex');
+
         // Verify the MAC to confirm the webhook is from Instamojo
         if (generatedMac !== webhookData.mac) {
             return res.status(403).json({ error: 'Invalid MAC, unauthorized.' });
         }
 
-        // Check if payment status is 'Credit' and the buyer_phone is provided
-        if (webhookData.status === 'Credit' && webhookData.buyer_phone) {
-            // Define the coin amount and subscription start date
+        // Normalize buyer_phone by removing +91 if present
+        let buyerPhone = webhookData.buyer_phone;
+        if (buyerPhone.startsWith('+91')) {
+            buyerPhone = buyerPhone.substring(3); // Remove the '+91' prefix
+        }
+        console.log('buyerPhone:', buyerPhone);
+        console.log('webhookData.status:', webhookData.status);
+        // Check if payment status is 'Credit'
+        if (webhookData.status === 'Credit' && buyerPhone) {
             const coinsToAdd = 10000;
-            const subscriptionStartDate = moment().toISOString(); // Current timestamp in ISO 8601 format
+            const subscriptionStartDate = moment().toISOString();
 
             // Update the user's coin balance and subscription start date
             await User.findOneAndUpdate(
-                { phoneNumber: webhookData.buyer_phone },
+                { phoneNumber: buyerPhone },
                 {
                     $inc: { coins: coinsToAdd }, // Increment user's coins by 10000
                     subscriptionStartDate: subscriptionStartDate // Update subscription start date
@@ -275,10 +282,8 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
                 { new: true } // Return the updated user object
             );
 
-            // Respond positively after successful update
             res.status(200).send('Webhook processed successfully');
         } else {
-            // Handle other cases, such as payment failure or missing phone number
             res.status(400).send('Payment failed or buyer phone not provided');
         }
     } catch (error) {
@@ -286,5 +291,6 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 module.exports = router;

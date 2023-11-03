@@ -254,7 +254,7 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
         const generatedMac = crypto.createHmac('sha1', privateSalt)
             .update(JSON.stringify(webhookData))
             .digest('hex');
-
+        console.log("generatedMac", generatedMac)
         // Verify the MAC to confirm the webhook is from Instamojo
         if (generatedMac !== webhookData.mac) {
             return res.status(403).json({ error: 'Invalid MAC, unauthorized.' });

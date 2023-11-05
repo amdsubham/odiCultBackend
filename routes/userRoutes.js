@@ -6,7 +6,6 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk'); // Import the AWS SDK
 const Utils = require('../models/utils');
-const moment = require('moment')
 
 // AWS S3 configuration
 const s3 = new AWS.S3();
@@ -220,9 +219,7 @@ router.put('/updateUserCoins/:phoneNumber', async (req, res) => {
 router.get('/getAppUpdateStatus', async (req, res) => {
     try {
         const appUpdateDocument = await Utils.findOne({ name: 'appUpdate' });
-        console.log("appUpdateDocument", appUpdateDocument)
         if (!appUpdateDocument) {
-            console.log('No appUpdate document found or blockApp is not defined.');
             return res.status(200).json({ blockApp: false });
         }
 
@@ -293,5 +290,30 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
     }
 });
 
+
+router.post('/sendotp', async (req, res) => {
+    const { phoneNumber, assignedOtp } = req.body; // Assume this contains the necessary phone number or other data
+    try {
+        const apiResponse = await fetch('http://msg.mtalkz.com/V2/http-api-post.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                apikey: process.env.MTALKZ_API_KEY,  // Use environment variable for API key
+                senderid: 'MTAMOI',
+                number: phoneNumber,
+                message: `Your OTP- One Time Password is ${assignedOtp} to authenticate your login with #4r3mk23 Powered By mTalkz`,
+                format: 'json',
+            }),
+        });
+
+        const data = await apiResponse.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error forwarding OTP request:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 module.exports = router;

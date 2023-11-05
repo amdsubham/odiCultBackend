@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     coins: { type: Number, default: 0 },
     subscriptionStartDate: { type: String, default: 'NA' },
     location: Object,
+    flatmates: { type: Array, default: [] },
 });
 
 module.exports = mongoose.model('User', userSchema);

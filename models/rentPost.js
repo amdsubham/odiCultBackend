@@ -16,6 +16,8 @@ const rentPostSchema = new mongoose.Schema({
     isBachelorsAllowed: Boolean,
     user: Object,
     price: Number,
+    flatmates: { type: Array, default: [] },
+    firebaseId: String,
 });
 
 module.exports = mongoose.model('RentPost', rentPostSchema);

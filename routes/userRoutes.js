@@ -181,6 +181,23 @@ router.get('/getUserByPhoneNumber/:phoneNumber', async (req, res) => {
     }
 });
 
+router.get('/getUserByFirebaseId/:firebaseId', async (req, res) => {
+    const { firebaseId } = req.params;
+
+    try {
+        const user = await User.findOne({ firebaseId });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Return the user details as JSON response
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error fetching user by firebase Id:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Define a route to update user coins and check subscription
 router.put('/updateUserCoins/:phoneNumber', async (req, res) => {
     const { phoneNumber } = req.params;

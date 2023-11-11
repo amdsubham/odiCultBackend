@@ -116,5 +116,20 @@ router.get('/getAllPosts', async (req, res) => {
     }
 });
 
+router.get('/getPostsById/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const post = await RentPost.findById(id);
+
+        if (!post) {
+            return res.status(404).json({ error: 'Rental post not found' });
+        }
+
+        return res.status(200).json(post);
+    } catch (error) {
+        console.error('Error fetching rental post:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 module.exports = router;

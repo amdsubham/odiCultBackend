@@ -60,12 +60,13 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'User already exists.' });
         }
 
-        const { name, email, gender, tenantType, image } = req.body;
+        const { name, email, gender, tenantType, image, firebaseId } = req.body;
 
         // Fetch maxCoinsToAssign from "utils" document
         const maxCoinsToAssign = await getMaxCoinsToAssign();
 
         const newUser = new User({
+            firebaseId,
             name,
             email,
             gender,

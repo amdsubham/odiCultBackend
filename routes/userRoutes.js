@@ -6,6 +6,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk'); // Import the AWS SDK
 const Utils = require('../models/utils');
+const { default: axios } = require('axios');
 
 // AWS S3 configuration
 const s3 = new AWS.S3();
@@ -334,4 +335,13 @@ router.post('/sendotp', async (req, res) => {
     }
 });
 
+
+router.get('/fetchDukan', async (req, res) => {
+    try {
+        const response = await axios.get('https://mydukaan.io/rentodisha');
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send('Error fetching content');
+    }
+});
 module.exports = router;

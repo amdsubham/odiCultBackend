@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     subscriptionStartDate: { type: String, default: 'NA' },
     location: Object,
     firebaseId: String,
+    deviceToken: String,
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -3,10 +3,6 @@ const RentPost = require('../models/rentPost');
 const User = require('../models/User');
 const router = express.Router();
 
-// API Routes
-
-// Create a new rental post
-// Create a new rental post
 router.post('/create', async (req, res) => {
     try {
         const newPostData = req.body;
@@ -38,8 +34,6 @@ router.post('/create', async (req, res) => {
 router.put('/update/:id', async (req, res) => {
     const { id } = req.params;
     const updatedPostData = req.body;
-    console.log("updatedPostData", updatedPostData)
-
     try {
         // Find the rental post by ID
         const rentalPost = await RentPost.findById(id);

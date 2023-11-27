@@ -344,4 +344,26 @@ router.get('/fetchDukan', async (req, res) => {
         res.status(500).send('Error fetching content');
     }
 });
+
+router.put('/updateDeviceToken', async (req, res) => {
+    const { phoneNumber, deviceToken } = req.body;
+
+    try {
+        const user = await User.findOne({ phoneNumber });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        user.deviceToken = deviceToken; // Update the deviceToken
+
+        const updatedUser = await user.save();
+
+        res.status(200).json({ message: 'Device token updated successfully', updatedUser });
+    } catch (error) {
+        console.error('Error updating device token:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

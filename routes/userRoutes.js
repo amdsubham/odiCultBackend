@@ -7,6 +7,7 @@ const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk'); // Import the AWS SDK
 const Utils = require('../models/utils');
 const { default: axios } = require('axios');
+const { sendOneSignalNotification } = require('../utils/pushNotification');
 
 // AWS S3 configuration
 const s3 = new AWS.S3();
@@ -362,6 +363,17 @@ router.put('/updateDeviceToken', async (req, res) => {
         res.status(200).json({ message: 'Device token updated successfully', updatedUser });
     } catch (error) {
         console.error('Error updating device token:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.post('/sendNotification', async (req, res) => {
+    const { userIds, message } = req.body;
+    try {
+        const response = await sendOneSignalNotification(userIds, message);
+        res.status(200).json({ message: 'Notification sent successfully', data: response });
+    } catch (error) {
+        console.error('Error sending notification:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

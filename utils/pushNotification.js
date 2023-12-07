@@ -10,7 +10,7 @@ const sendOneSignalNotification = async (userIds, message) => {
     };
     const data = {
         app_id: process.env.ONESIGNAL_APP_ID,
-        include_subscription_ids: userIds,
+        include_external_user_ids: userIds,
         contents: {
             en: message
         }

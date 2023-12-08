@@ -368,9 +368,9 @@ router.put('/updateDeviceToken', async (req, res) => {
 });
 
 router.post('/sendNotification', async (req, res) => {
-    const { userIds, message } = req.body;
+    const { userIds, message, data } = req.body;
     try {
-        const response = await sendOneSignalNotification(userIds, message);
+        const response = await sendOneSignalNotification(userIds, message, data);
         res.status(200).json({ message: 'Notification sent successfully', data: response });
     } catch (error) {
         console.error('Error sending notification:', error);

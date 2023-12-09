@@ -279,14 +279,14 @@ router.post('/instamojoWebhook', express.urlencoded({ extended: true }), async (
         // }
 
         // Normalize buyer_phone by removing +91 if present
-        let buyerPhone = webhookData.buyer_phone;
+        let buyerPhone = webhookData.buyer.phone;
         if (buyerPhone.startsWith('+91')) {
             buyerPhone = buyerPhone.substring(3); // Remove the '+91' prefix
         }
         console.log('buyerPhone:', buyerPhone);
-        console.log('webhookData.status:', webhookData.status);
+        console.log('webhookData.status:', webhookData.payment.status);
         // Check if payment status is 'Credit'
-        if (webhookData.status === 'Credit' && buyerPhone) {
+        if (webhookData.payment.status === 'SUCCESS' && buyerPhone) {
             const coinsToAdd = 10000;
             const subscriptionStartDate = (Date.now() / 1000).toString();
             console.log("subscriptionStartDate", subscriptionStartDate / 1000)
